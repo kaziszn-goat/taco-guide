@@ -107,6 +107,9 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;opa
 .photo:hover .tile{transform:scale(1.05)}
 .photo .tile i{display:block;font-size:50px;font-style:normal;margin-bottom:8px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
 .photo .tile span{display:block;font-size:13.5px;opacity:.96;letter-spacing:.01em}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.photo:hover img{transform:scale(1.05)}
+.photo figcaption{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:20px 12px 9px;color:#fff;font-family:'Fraunces',serif;font-weight:600;font-size:14px;text-shadow:0 1px 6px rgba(0,0,0,.55);background:linear-gradient(transparent,rgba(20,10,6,.7))}
 /* address + map */
 .spot-foot{display:grid;grid-template-columns:1fr 300px;gap:0;border-top:1px solid var(--rule);margin-top:18px}
 .addr{padding:24px 34px}
@@ -269,6 +272,13 @@ function starRow(r){
   while(s.length<5)s+='☆';return `<span class="stars">${s.slice(0,5)}</span>`;
 }
 
+const IMG={
+ "Contigo Taco Bar":"https://img3.restaurantguru.com/w550/h367/r8e5-design-Contigo-2025-06.jpg",
+ "Tacos El Asador":"https://img.restaurantguru.com/w550/h367/ra74-Tacos-El-Asador-interior-2022-09.jpg",
+ "Itacate":"https://img.restaurantguru.com/w550/h367/r4b3-Itacate-interior-2024-12.jpg",
+ "Comal y Canela":"https://img.restaurantguru.com/w550/h367/r2d5-Comal-y-Canela-interior-2024-12-3.jpg",
+ "Tacomania":"https://d2s742iet3d3t1.cloudfront.net/restaurants/restaurant-321922000000000000/restaurant_1774468661.png?size=large"
+};
 const cards=document.getElementById('cards');
 spots.forEach((sp,i)=>{
   const el=document.createElement('section');
@@ -278,10 +288,13 @@ spots.forEach((sp,i)=>{
     : `${starRow(sp.rating)}<span class="num">${sp.rating}★</span><span class="src">${sp.src}</span>`;
   const badgeHtml = sp.badge[1]?`<span class="badge ${sp.badge[0]||'near'}">${sp.badge[1]}</span>`:'';
   const pal=['linear-gradient(135deg,#f3c06a,#c33d27)','linear-gradient(135deg,#7cb342,#2f6b1f)','linear-gradient(135deg,#e89a2c,#8c2414)','linear-gradient(135deg,#e0a94e,#b5361f)','linear-gradient(135deg,#d98b3a,#7a1f12)'][sp.rank-1];
-  const emo=[['🌮','🌯'],['🌮','🔥'],['🌮','🧀'],['🌮','🫔'],['🌮','🌶️']][sp.rank-1];
-  const photos = [0,1].map(idx=>
-    `<div class="photo" style="background:${pal}"><div class="tile"><i>${emo[idx]}</i><span>${idx===0?'Try: '+sp.tryit:sp.name}</span></div></div>`
-  ).join('');
+  const real=IMG[sp.name]||'';
+  const food=`https://loremflickr.com/640/440/mexican,tacos?lock=${sp.rank*13+7}`;
+  const mk=(src,cap)=>`<div class="photo" style="background:${pal}">`+
+    `<div class="tile"><i>🌮</i><span>${sp.name}</span></div>`+
+    (src?`<img src="${src}" alt="${sp.name}" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:'')+
+    `<figcaption>${cap}</figcaption></div>`;
+  const photos = mk(real, sp.name) + mk(food, 'Try the '+sp.tryit);
   const q=encodeURIComponent(sp.name+' '+sp.addr);
   el.innerHTML=`
     <div class="spot-head">
