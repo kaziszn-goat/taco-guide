@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Tacos Home — A Field Guide for the Drive Back</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<style>
+:root{
+  --masa:#fbf4e8;       /* warm corn paper */
+  --masa-shadow:#f0e3cc;
+  --char:#2a1710;        /* charred ink */
+  --char-soft:#6b5443;
+  --salsa:#c33d27;       /* salsa roja */
+  --salsa-deep:#8c2414;
+  --lime:#6fae3e;        /* lime / cilantro */
+  --avocado:#4e7a34;
+  --amber:#e89a2c;       /* charred corn / sun */
+  --amber-soft:#f3c06a;
+  --rule:#e6d6ba;
+  --cream:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Instrument Sans',sans-serif;background:var(--masa);color:var(--char);line-height:1.6;overflow-x:hidden;-webkit-text-size-adjust:100%}
+::selection{background:var(--amber);color:var(--char)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");}
+.wrap{max-width:1060px;margin:0 auto;padding:0 28px}
+
+/* HERO */
+.hero{position:relative;min-height:88vh;display:flex;flex-direction:column;
+  background:linear-gradient(165deg,#fde9c4 0%,#f6cf8f 40%,#eba94f 72%,var(--salsa) 100%);overflow:hidden}
+.hero-taco{position:absolute;top:8%;right:10%;font-size:130px;line-height:1;
+  animation:sunrise 2.2s cubic-bezier(.22,1,.36,1) both;
+  filter:drop-shadow(0 16px 22px rgba(140,36,20,.28)) drop-shadow(0 0 48px rgba(232,154,44,.4))}
+@keyframes sunrise{from{transform:translateY(110px);opacity:0}to{transform:translateY(0);opacity:1}}
+.hero-inner{position:relative;z-index:5;flex:1;display:flex;flex-direction:column;justify-content:flex-start;padding-top:9vh}
+.kicker{display:flex;align-items:center;gap:14px;font-size:13px;letter-spacing:.3em;text-transform:uppercase;font-weight:600;color:var(--salsa-deep);animation:fadeup .9s .4s both}
+.kicker::before{content:'';width:46px;height:2px;background:var(--salsa-deep)}
+.hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(44px,13vw,168px);line-height:.9;letter-spacing:-.02em;color:var(--char);margin-top:20px;overflow-wrap:break-word}
+.hero h1 .ital{font-style:italic;font-weight:400;color:var(--salsa-deep)}
+.hero h1 span{display:block;animation:fadeup 1s both}
+.hero h1 span:nth-child(1){animation-delay:.58s}
+.hero h1 span:nth-child(2){animation-delay:.72s;margin-left:.06em}
+@keyframes fadeup{from{transform:translateY(32px);opacity:0}to{transform:translateY(0);opacity:1}}
+.hero-sub{margin-top:28px;max-width:470px;font-size:17.5px;color:var(--char);animation:fadeup 1s .9s both}
+.hero-meta{display:flex;gap:34px;margin-top:34px;animation:fadeup 1s 1.05s both;flex-wrap:wrap}
+.hero-meta div{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--salsa-deep)}
+.hero-meta div b{display:block;font-family:'Fraunces',serif;font-size:25px;letter-spacing:0;text-transform:none;font-weight:600;color:var(--char)}
+.hero-wave{position:absolute;bottom:-1px;left:0;width:100%;line-height:0}
+.hero-wave svg{width:100%;height:auto;display:block}
+
+/* STAT BAND */
+.stats{background:var(--char);color:var(--masa);position:relative;z-index:5}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+.stat{padding:38px 24px;border-left:1px solid rgba(251,244,232,.13)}
+.stat:first-child{border-left:none}
+.stat em{display:block;font-family:'Fraunces',serif;font-style:normal;font-weight:600;font-size:clamp(32px,4.2vw,48px);line-height:1;color:var(--amber-soft)}
+.stat span{display:block;margin-top:9px;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:#d9b98c}
+
+/* SECTION INTRO */
+.lead{padding:74px 0 8px}
+.lead .eye{font-size:13px;letter-spacing:.28em;text-transform:uppercase;font-weight:600;color:var(--salsa);margin-bottom:16px}
+.lead h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(30px,4.6vw,46px);line-height:1.08;letter-spacing:-.01em;max-width:760px}
+.lead p{max-width:620px;color:var(--char-soft);font-size:17px;margin-top:18px}
+
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* SPOT CARD */
+.spot{margin-top:42px;background:var(--cream);border:1px solid var(--rule);border-radius:22px;overflow:hidden;
+  box-shadow:0 24px 50px -34px rgba(42,23,16,.4)}
+.spot-head{display:flex;align-items:flex-start;gap:22px;padding:30px 34px 22px}
+.rank{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(46px,7vw,72px);line-height:.8;color:var(--salsa);flex:none;
+  width:84px;text-align:center}
+.rank small{display:block;font-family:'Instrument Sans',sans-serif;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--char-soft);font-weight:600;margin-top:8px}
+.spot-id{flex:1;min-width:0}
+.spot-id h3{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(26px,3.6vw,34px);letter-spacing:-.01em;line-height:1.05}
+.rating{display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap}
+.stars{font-size:19px;letter-spacing:2px;color:var(--amber);line-height:1}
+.rating .num{font-family:'Fraunces',serif;font-weight:600;font-size:22px;color:var(--char)}
+.rating .src{font-size:12.5px;color:var(--char-soft);font-weight:500}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border-radius:99px;padding:5px 12px}
+.badge.top{background:var(--amber);color:var(--char)}
+.badge.pick{background:var(--salsa);color:#fff}
+.badge.near{background:var(--lime);color:#173a08}
+.meta{display:flex;align-items:center;gap:9px;margin-top:11px;flex-wrap:wrap;font-size:14.5px}
+.price{font-family:'Fraunces',serif;font-weight:600;color:var(--avocado);font-size:18px;letter-spacing:1.5px}
+.dot{color:var(--rule);font-weight:700}
+.tryit{color:var(--char-soft)}
+.tryit b{color:var(--char);font-weight:600}
+.call{background:var(--salsa)!important;color:#fff!important;border-color:var(--salsa)!important}
+.call:hover{background:var(--salsa-deep)!important}
+.spot-blurb{padding:0 34px;color:var(--char-soft);font-size:15.5px;max-width:760px}
+.spot-note{margin:14px 34px 0;padding:12px 16px;background:var(--masa);border-left:3px solid var(--amber);border-radius:0 9px 9px 0;font-size:14px;color:var(--char)}
+.spot-note b{font-weight:600}
+/* photos */
+.photos{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:20px 34px 6px}
+.photo{position:relative;aspect-ratio:8/5;border-radius:14px;overflow:hidden;border:1px solid var(--rule);display:grid;place-items:center}
+.photo .tile{position:absolute;inset:0;display:grid;place-items:center;align-content:center;text-align:center;color:#fff;padding:12px;
+  font-family:'Fraunces',serif;font-weight:600;font-size:15px;text-shadow:0 1px 8px rgba(0,0,0,.3);transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.photo:hover .tile{transform:scale(1.05)}
+.photo .tile i{display:block;font-size:50px;font-style:normal;margin-bottom:8px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
+.photo .tile span{display:block;font-size:13.5px;opacity:.96;letter-spacing:.01em}
+/* address + map */
+.spot-foot{display:grid;grid-template-columns:1fr 300px;gap:0;border-top:1px solid var(--rule);margin-top:18px}
+.addr{padding:24px 34px}
+.addr .lbl{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--salsa);margin-bottom:8px}
+.addr .a{font-family:'Fraunces',serif;font-size:20px;font-weight:600;line-height:1.3}
+.addr .a small{display:block;font-family:'Instrument Sans',sans-serif;font-size:13.5px;color:var(--char-soft);font-weight:500;margin-top:6px}
+.addr .links{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+.addr .links a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--char);background:var(--masa);border:1px solid var(--rule);border-radius:99px;padding:7px 14px;transition:background .2s,transform .2s}
+.addr .links a:hover{background:var(--amber);transform:translateY(-1px)}
+.mini-map{height:100%;min-height:230px;border-left:1px solid var(--rule);position:relative}
+.mini-map .map-el{position:absolute;inset:0}
+.detour{position:absolute;top:12px;left:12px;z-index:500;background:rgba(42,23,16,.9);color:var(--masa);font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;font-weight:700;border-radius:8px;padding:6px 11px}
+.detour b{color:var(--amber-soft)}
+.pin{width:28px;height:28px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);border:2.5px solid var(--masa);
+  display:grid;place-items:center;box-shadow:0 5px 12px -3px rgba(42,23,16,.6)}
+.pin span{transform:rotate(45deg);color:#fff;font-weight:700;font-size:12px;font-family:'Instrument Sans',sans-serif}
+.pin.start{background:var(--amber)}.pin.start span{color:var(--char)}
+.pin.taco{background:var(--salsa)}
+.pin.home{background:var(--avocado);border-radius:50%}
+.pin.home span{transform:none;font-size:14px}
+.leaflet-popup-content-wrapper{background:var(--masa);border-radius:11px;font-family:'Instrument Sans',sans-serif;color:var(--char)}
+.leaflet-popup-content b{font-family:'Fraunces',serif}
+
+/* DRIVE LEGS */
+.legs{display:flex;align-items:center;gap:8px;padding:18px 34px;border-top:1px dashed var(--rule);margin-top:14px;flex-wrap:wrap}
+.lnode{display:flex;flex-direction:column;align-items:center;flex:none;width:50px;text-align:center}
+.lnode span{font-size:21px;line-height:1}
+.lnode small{font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--char-soft);font-weight:700;margin-top:3px}
+.lnode.taco span{font-size:25px}
+.lseg{flex:1;min-width:50px;display:flex;flex-direction:column;align-items:center}
+.lseg b{font-family:'Fraunces',serif;font-weight:600;font-size:15.5px;color:var(--salsa);white-space:nowrap}
+.lseg::after{content:'';display:block;width:100%;height:2px;margin-top:4px;background:repeating-linear-gradient(90deg,var(--amber) 0 5px,transparent 5px 11px)}
+.ltotal{margin-left:auto;background:var(--masa);border:1px solid var(--rule);border-radius:12px;padding:7px 13px;text-align:center;font-family:'Fraunces',serif;font-weight:600;font-size:13.5px;color:var(--char);white-space:nowrap}
+.ltotal small{display:block;font-family:'Instrument Sans',sans-serif;font-size:10.5px;font-weight:700;color:var(--avocado)}
+
+/* FOOTER */
+footer{margin-top:96px;background:var(--char);color:#d9b98c;position:relative;overflow:hidden}
+footer .wrap{padding:70px 28px 56px}
+footer .sig{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(26px,4vw,42px);color:var(--masa);line-height:1.25;max-width:660px}
+footer .sig b{color:var(--amber-soft);font-style:normal;font-weight:600}
+footer .credit{margin-top:30px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+footer .disc{margin-top:14px;font-size:12px;color:#9c7a5a;max-width:620px;line-height:1.5}
+
+@media(max-width:860px){
+  .stats .wrap{grid-template-columns:repeat(2,1fr)}
+  .stat{border-left:none;border-top:1px solid rgba(251,244,232,.13)}
+  .spot-foot{grid-template-columns:1fr}
+  .mini-map{border-left:none;border-top:1px solid var(--rule);min-height:240px}
+  .rank{width:64px}
+}
+@media(max-width:600px){
+  .wrap{padding:0 16px}
+  .hero{min-height:auto;padding-bottom:30px}
+  .hero-inner{padding-top:7vh}
+  .hero-taco{font-size:80px;top:6%;right:6%}
+  .hero-meta{gap:22px}
+  .lead{padding:46px 0 4px}
+  .spot{margin-top:30px;border-radius:18px}
+  .spot-head{padding:22px 18px 14px;gap:12px}
+  .rank{width:50px}
+  .spot-id h3{font-size:23px}
+  .spot-blurb{padding:0 18px}
+  .spot-note{margin:12px 18px 0;padding:11px 14px}
+  .photos{padding:16px 18px 4px;gap:10px}
+  .legs{padding:16px 18px;gap:7px}
+  .lnode{width:44px}
+  .ltotal{margin-left:0;margin-top:6px;width:100%}
+  .addr{padding:20px 18px}
+}
+@media(max-width:520px){.photos{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-taco">🌮</div>
+  <div class="wrap hero-inner">
+    <div class="kicker">A Field Guide · Tacos on the Drive Home</div>
+    <h1><span>FIVE</span><span class="ital">Taquerias.</span></h1>
+    <p class="hero-sub">Casual taco stops on the drive from Oakville back home — ranked, rated &amp; mapped.</p>
+    <div class="hero-meta">
+      <div>Prepared for<b>Jason</b></div>
+      <div>Route<b>Oakville → Home</b></div>
+      <div>Stops<b>5 taquerias</b></div>
+    </div>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path fill="#fbf4e8" d="M0,120 L0,64 C160,30 320,30 480,52 C640,74 800,96 960,84 C1120,72 1280,34 1440,46 L1440,120 Z"/></svg>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><em>4.9★</em><span>Top-rated stop</span></div>
+    <div class="stat"><em>5</em><span>Taquerias ranked</span></div>
+    <div class="stat"><em>~50 km</em><span>Oakville → home</span></div>
+    <div class="stat"><em>$ – $$</em><span>All casual, no fuss</span></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="lead">
+    <div class="eye reveal">For Jason · Oakville → Home</div>
+    <h2 class="reveal">Five casual taco stops on the way back.</h2>
+  </section>
+
+  <!-- cards injected by JS -->
+  <div id="cards"></div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="sig">Five stops, one drive home. Get the <b>birria at Contigo</b> — you're in sweats, don't overthink it.</p>
+    <div class="credit">Taco Field Guide · Oakville → Cedarvale</div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+const START=[43.50032,-79.73607];
+const HOME=[43.69996,-79.43326];
+
+const spots=[
+  {rank:1,name:"Contigo Taco Bar",rating:"4.9",src:"Google",badge:["top","Highest rated"],
+   ll:[43.59113,-79.74223],addr:"6465 Millcreek Dr, Mississauga",sub:"Meadowvale · ~15 min off Trafalgar",
+   blurb:"The highest-rated stop of the whole run and your first off the line — a tucked-away counter taco bar in northwest Mississauga that locals rave about. Birria and al pastor are the move.",
+   note:"Order the <b>quesabirria</b> with consommé. Easy in-and-out on the way through Mississauga.",
+   detour:"On the way",t1:15,t2:30,extra:9,price:"$$",phone:"(437) 880-7801",tryit:"Quesabirria with consommé"},
+  {rank:2,name:"Tacos El Asador",rating:"4.7",src:"Google · 2,000+ reviews",badge:["top","West-end legend"],
+   ll:[43.66371,-79.41690],addr:"689 Bloor St W, Toronto",sub:"Koreatown · on Bloor, central",
+   blurb:"A no-frills Salvadoran-Mexican institution that's been char-grilling on Bloor for decades — routinely called the best in the west end. Cheap, smoky, and exactly the sweats-friendly energy you want.",
+   note:"Cash-friendly and tiny — the <b>grilled chicken &amp; steak tacos</b> are the classics. Can get a short line.",
+   detour:"Mild detour",t1:41,t2:10,extra:15,price:"$",phone:"(416) 538-9747",tryit:"Char-grilled chicken taco"},
+  {rank:3,name:"Itacate",rating:"4.8",src:"RestaurantGuru (4.5 Google)",badge:["near","Closest to home"],
+   ll:[43.67951,-79.43724],addr:"998 St Clair Ave W, Toronto",sub:"Corso Italia · ~3 min from home",
+   blurb:"A tiny, deeply authentic counter taqueria basically in your neighbourhood — the last stop before you're home. Al pastor, carnitas, bistek, and the cult-favourite Volcán taco.",
+   note:"<b>Cash / e-transfer only</b> — no cards. Grab cash before you pull up.",
+   detour:"Right by home",t1:38,t2:6,extra:8,price:"$",phone:"(647) 701-0420",tryit:"The Volcán taco"},
+  {rank:4,name:"Comal y Canela",rating:"4.5",src:"Google",badge:["near","Homey &amp; casual"],
+   ll:[43.70325,-79.50423],addr:"1692B Jane St, North York",sub:"Mount Dennis · off the 401 / Eglinton",
+   blurb:"A homey, made-from-scratch taqueria on Jane — birria tacos, quesadillas, tortillas pressed in-house, and absolutely zero pretension. Pure sweats-and-a-paper-plate energy.",
+   note:"The <b>birria tacos with consommé</b> are the order. Cheap, friendly, west-end on the way in.",
+   detour:"On-route",t1:30,t2:10,extra:4,price:"$$",phone:"(647) 689-4694",tryit:"Birria tacos + consommé"},
+  {rank:5,name:"Tacomania",rating:"New",src:"Your pick · Yonge & Bloor",badge:["pick","Your add"],
+   ll:[43.66716,-79.38577],addr:"668 Yonge St, Toronto",sub:"Downtown Yonge · slight detour east",
+   blurb:"Your call — a newer, no-frills Mexican spot at Yonge &amp; Bloor with BOGO deals pulling people in. Reviews are still stacking up, so it's the casual wildcard of the list.",
+   note:"A touch off the line (downtown), but quick if you're cutting through the core. <b>Confirm it's open</b> before going.",
+   detour:"Downtown detour",t1:41,t2:13,extra:18,price:"$",phone:"(905) 348-1766",tryit:"Al pastor (BOGO deals)"}
+];
+
+function pin(cls,label){return L.divIcon({className:'',html:`<div class="pin ${cls}"><span>${label}</span></div>`,iconSize:[28,28],iconAnchor:[14,26]});}
+
+function starRow(r){
+  if(isNaN(parseFloat(r))) return '<span class="stars">🌮🌮🌮🌮🌮</span>';
+  const v=parseFloat(r), full=Math.floor(v), half=v-full>=0.25&&v-full<0.75, almost=v-full>=0.75;
+  let s='';for(let i=0;i<full;i++)s+='★';if(almost){s+='★';}else if(half){s+='⯨';}
+  while(s.length<5)s+='☆';return `<span class="stars">${s.slice(0,5)}</span>`;
+}
+
+const cards=document.getElementById('cards');
+spots.forEach((sp,i)=>{
+  const el=document.createElement('section');
+  el.className='spot reveal';
+  const ratingHtml = sp.rating==="New"
+    ? `<span class="num">New</span><span class="src">${sp.src}</span>`
+    : `${starRow(sp.rating)}<span class="num">${sp.rating}★</span><span class="src">${sp.src}</span>`;
+  const badgeHtml = sp.badge[1]?`<span class="badge ${sp.badge[0]||'near'}">${sp.badge[1]}</span>`:'';
+  const pal=['linear-gradient(135deg,#f3c06a,#c33d27)','linear-gradient(135deg,#7cb342,#2f6b1f)','linear-gradient(135deg,#e89a2c,#8c2414)','linear-gradient(135deg,#e0a94e,#b5361f)','linear-gradient(135deg,#d98b3a,#7a1f12)'][sp.rank-1];
+  const emo=[['🌮','🌯'],['🌮','🔥'],['🌮','🧀'],['🌮','🫔'],['🌮','🌶️']][sp.rank-1];
+  const photos = [0,1].map(idx=>
+    `<div class="photo" style="background:${pal}"><div class="tile"><i>${emo[idx]}</i><span>${idx===0?'Try: '+sp.tryit:sp.name}</span></div></div>`
+  ).join('');
+  const q=encodeURIComponent(sp.name+' '+sp.addr);
+  el.innerHTML=`
+    <div class="spot-head">
+      <div class="rank">${sp.rank}<small>No.</small></div>
+      <div class="spot-id">
+        <h3>${sp.name}</h3>
+        <div class="rating">${ratingHtml} ${badgeHtml}</div>
+        <div class="meta"><span class="price">${sp.price}</span><span class="dot">·</span><span class="tryit">🌟 Try the <b>${sp.tryit}</b></span></div>
+      </div>
+    </div>
+    <div class="photos">${photos}</div>
+    <div class="legs">
+      <div class="lnode"><span>📍</span><small>Start</small></div>
+      <div class="lseg"><b>${sp.t1} min</b></div>
+      <div class="lnode taco"><span>🌮</span><small>Stop</small></div>
+      <div class="lseg"><b>${sp.t2} min</b></div>
+      <div class="lnode"><span>🏠</span><small>Home</small></div>
+      <div class="ltotal">~${sp.t1+sp.t2} min round-trip<small>+${sp.extra} min vs. straight home</small></div>
+    </div>
+    <div class="spot-foot">
+      <div class="addr">
+        <div class="lbl">📍 Address</div>
+        <div class="a">${sp.addr}<small>${sp.sub}</small></div>
+        <div class="links">
+          <a class="call" href="tel:+1${sp.phone.replace(/[^0-9]/g,'')}">📞 ${sp.phone}</a>
+          <a href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">Maps ↗</a>
+          <a href="https://www.google.com/maps/dir/3079+Trafalgar+Rd,+Oakville/${q}/6+Glenarden+Rd,+Toronto" target="_blank" rel="noopener">Route ↗</a>
+        </div>
+      </div>
+      <div class="mini-map"><div class="map-el" id="map-${sp.rank}"></div><div class="detour"><b>${sp.detour}</b></div></div>
+    </div>`;
+  cards.appendChild(el);
+});
+
+// build maps after cards are in DOM
+const isMobile=window.matchMedia('(max-width:768px)').matches;
+spots.forEach(sp=>{
+  const map=L.map(`map-${sp.rank}`,{zoomControl:false,scrollWheelZoom:false,attributionControl:false,
+    dragging:!isMobile,touchZoom:false,doubleClickZoom:false});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
+  L.polyline([START,sp.ll,HOME],{color:'#c33d27',weight:3,opacity:.85,dashArray:'2,7',lineCap:'round'}).addTo(map);
+  L.marker(START,{icon:pin('start','S')}).addTo(map).bindPopup('<b>Start</b><br>3079 Trafalgar Rd');
+  L.marker(sp.ll,{icon:pin('taco',sp.rank)}).addTo(map).bindPopup(`<b>${sp.name}</b><br>${sp.addr}`);
+  L.marker(HOME,{icon:pin('home','🏠')}).addTo(map).bindPopup('<b>Home</b><br>6 Glenarden Rd');
+  map.fitBounds(L.latLngBounds([START,sp.ll,HOME]).pad(0.18));
+});
+
+// reveal on scroll
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(n=>io.observe(n));
+</script>
+</body>
+</html>
