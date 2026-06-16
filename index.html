@@ -44,6 +44,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;opa
 .kicker::before{content:'';width:46px;height:2px;background:var(--salsa-deep)}
 .hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(44px,13vw,168px);line-height:.9;letter-spacing:-.02em;color:var(--char);margin-top:20px;overflow-wrap:break-word}
 .hero h1 .ital{font-style:italic;font-weight:400;color:var(--salsa-deep)}
+.hero h1 .sub2{display:block;font-size:.4em;margin-top:.08em;letter-spacing:-.01em}
 .hero h1 span{display:block;animation:fadeup 1s both}
 .hero h1 span:nth-child(1){animation-delay:.58s}
 .hero h1 span:nth-child(2){animation-delay:.72s;margin-left:.06em}
@@ -57,7 +58,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:60;opa
 
 /* STAT BAND */
 .stats{background:var(--char);color:var(--masa);position:relative;z-index:5}
-.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr)}
+.stats .wrap{display:grid;grid-template-columns:repeat(3,1fr)}
 .stat{padding:38px 24px;border-left:1px solid rgba(251,244,232,.13)}
 .stat:first-child{border-left:none}
 .stat em{display:block;font-family:'Fraunces',serif;font-style:normal;font-weight:600;font-size:clamp(32px,4.2vw,48px);line-height:1;color:var(--amber-soft)}
@@ -189,8 +190,8 @@ footer .disc{margin-top:14px;font-size:12px;color:#9c7a5a;max-width:620px;line-h
 <header class="hero">
   <div class="hero-taco">🌮</div>
   <div class="wrap hero-inner">
-    <div class="kicker">A Field Guide · Tacos on the Drive Home</div>
-    <h1><span>FIVE</span><span class="ital">Taquerias.</span></h1>
+    <div class="kicker">🌮 Oakville → Home</div>
+    <h1><span>7 Spots</span><span class="ital sub2">on your way home.</span></h1>
     <p class="hero-sub">Casual taco stops on the drive from Oakville back home — ranked, rated &amp; mapped.</p>
     <div class="hero-meta">
       <div>Prepared for<b>Jason</b></div>
@@ -206,8 +207,7 @@ footer .disc{margin-top:14px;font-size:12px;color:#9c7a5a;max-width:620px;line-h
 <div class="stats">
   <div class="wrap">
     <div class="stat"><em>4.9★</em><span>Top-rated stop</span></div>
-    <div class="stat"><em>5</em><span>Taquerias ranked</span></div>
-    <div class="stat"><em>~50 km</em><span>Oakville → home</span></div>
+    <div class="stat"><em>7</em><span>Spots ranked</span></div>
     <div class="stat"><em>$ – $$</em><span>All casual, no fuss</span></div>
   </div>
 </div>
@@ -260,7 +260,13 @@ const spots=[
    ll:[43.66716,-79.38577],addr:"668 Yonge St, Toronto",sub:"Downtown Yonge · slight detour east",
    blurb:"Your call — a newer, no-frills Mexican spot at Yonge &amp; Bloor with BOGO deals pulling people in. Reviews are still stacking up, so it's the casual wildcard of the list.",
    note:"A touch off the line (downtown), but quick if you're cutting through the core. <b>Confirm it's open</b> before going.",
-   detour:"Downtown detour",t1:41,t2:13,extra:18,price:"$",phone:"(905) 348-1766",tryit:"Al pastor (BOGO deals)"}
+   detour:"Downtown detour",t1:41,t2:13,extra:18,price:"$",phone:"(905) 348-1766",tryit:"Al pastor (BOGO deals)"},
+  {rank:6,name:"El Mariachi Tacos & Churros",rating:"4.6",src:"Google",badge:["near","Near the start"],
+   ll:[43.58062,-79.71202],addr:"233 Queen St S, Mississauga",sub:"Streetsville · ~13 min from start",
+   detour:"Near the start",t1:13,t2:32,extra:9,price:"$",phone:"(905) 997-8333",tryit:"Tacos + churros"},
+  {rank:7,name:"Pa'l Antojo",rating:"4.5",src:"Google",badge:["near","Near the start"],
+   ll:[43.68840,-79.67161],addr:"1885 Drew Rd, Mississauga",sub:"On the 401 leg",
+   detour:"Near the start",t1:24,t2:27,extra:15,price:"$",phone:"(905) 673-7622",tryit:"Tacos al pastor + churros"}
 ];
 
 function pin(cls,label){return L.divIcon({className:'',html:`<div class="pin ${cls}"><span>${label}</span></div>`,iconSize:[28,28],iconAnchor:[14,26]});}
@@ -277,7 +283,9 @@ const IMG={
  "Tacos El Asador":"https://img.restaurantguru.com/w550/h367/ra74-Tacos-El-Asador-interior-2022-09.jpg",
  "Itacate":"https://img.restaurantguru.com/w550/h367/r4b3-Itacate-interior-2024-12.jpg",
  "Comal y Canela":"https://img.restaurantguru.com/w550/h367/r2d5-Comal-y-Canela-interior-2024-12-3.jpg",
- "Tacomania":"https://d2s742iet3d3t1.cloudfront.net/restaurants/restaurant-321922000000000000/restaurant_1774468661.png?size=large"
+ "Tacomania":"https://d2s742iet3d3t1.cloudfront.net/restaurants/restaurant-321922000000000000/restaurant_1774468661.png?size=large",
+ "Pa'l Antojo":"https://img3.restaurantguru.com/w550/h367/r99e-design-Pal-Antojo-Mexican-Food.jpg",
+ "El Mariachi Tacos & Churros":"https://img3.restaurantguru.com/w550/h367/rb0c-El-Mariachi-Tacos-and-Churros-Port-Credit-interior-2025-08-1.jpg"
 };
 const cards=document.getElementById('cards');
 spots.forEach((sp,i)=>{
